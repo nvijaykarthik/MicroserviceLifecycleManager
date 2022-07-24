@@ -1,0 +1,5 @@
+.overlay{
+    background-color: rgba(117, 205, 247, 0.4);
+    display:block !important;
+    z-index:1200 !important;
+}

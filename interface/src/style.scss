@@ -1,0 +1,22 @@
+$enable-shadows:true;
+
+$primary:#2c3f83;
+$secondary:#795468;
+$success:#009756;
+$info:#0053cb;
+$warning:#dec800;
+$danger:#eb1800;
+$light:#ddf5ff;
+$dark:#001a6b;
+
+
+
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+body{
+    background-color: $light;
+}
+.scroller{
+    max-height: 550px;
+    overflow-y: auto;
+}
