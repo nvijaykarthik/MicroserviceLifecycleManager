@@ -1,12 +1,271 @@
+import axios from "axios";
 import { Component } from "react";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPencil, faRefresh, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import Spinner from "./component/spinner";
+import { domain } from "./constants";
+
+const urlData = domain()+"api/service/search/byGroup?groupName=";
+const groupUrl=domain()+"api/group";
+
 class Services extends Component {
+
+  state = {
+    dateList: [],
+    filteredDataList: [],
+    selectedData: {
+      name: ""
+    },
+    selectedGroup:"",
+    parentDataList:[],
+    filter: "",
+    showUpdate: false,
+    showAdd: false,
+    showSpin: false
+  }
+
+
+  componentDidMount() {
+      this.loadParentDataList()
+  }
+
+  loadDataList(group) {
+    this.setState({ showSpin: true })
+    axios.get(urlData.concat(group)).then(
+      resp => {
+        console.log(resp)
+        let serviceses = resp.data._embedded.serviceses
+        this.setState({ dateList: serviceses, filteredDataList: serviceses, showSpin: false })
+      },
+      err => {
+        console.log(err)
+        this.setState({ showSpin: false })
+      }
+    )
+  }
+
+  loadParentDataList() {
+    this.setState({ showSpin: true })
+    axios.get(groupUrl).then(
+      resp => {
+        console.log(resp)
+        let serviceGroups = resp.data._embedded.serviceGroups
+        this.setState({ parentDataList: serviceGroups,showSpin: false  })
+      },
+      err => {
+        console.log(err)
+        this.setState({ showSpin: false })
+      }
+    )
+  }
+
+  getEdit(url) {
+    this.setState({ showSpin: true })
+    axios.get(url).then(
+      resp => {
+        console.log(resp)
+        let portFolio = resp.data
+        this.setState({ selectedData: portFolio, showUpdate: true, showAdd: false, showSpin: false })
+      },
+      err => {
+        console.log(err)
+        this.setState({ showSpin: false })
+      }
+    )
+  }
+
+  delete(url) {
+    this.setState({ showSpin: true })
+    axios.delete(url).then(
+      resp => {
+        console.log(resp)
+        this.loadDataList();
+      },
+      err => {
+        console.log(err)
+        this.setState({ showSpin: false })
+      }
+    )
+  }
+
+  update(url) {
+    let data = {
+      "name": this.state.selectedData.name,
+      "portfolioName":this.state.selectedData.portfolioName
+    }
+    this.setState({ showSpin: true })
+    axios.patch(url, data).then(
+      resp => {
+        console.log(resp)
+        this.loadDataList();
+      },
+      err => {
+        console.log(err)
+        this.setState({ showSpin: false })
+      }
+    )
+  }
+
+  new() {
+    let selectedData = this.state.selectedData
+    selectedData['name'] = ""
+    this.setState({ selectedData: selectedData, showAdd: true, showUpdate: false })
+  }
+
+  add() {
+    if (this.state.selectedData.name === "") {
+      alert("Name is empty");
+      return
+    }
+    let data = {
+      "name": this.state.selectedData.name,
+      "portfolioName":this.state.selectedData.portfolioName
+    }
+    this.setState({ showSpin: true })
+    axios.post(urlData, data).then(
+      resp => {
+        console.log(resp)
+        this.loadDataList();
+      },
+      err => {
+        console.log(err)
+        this.setState({ showSpin: false })
+      }
+    )
+  }
+
+  filter(e) {
+    if (this.state.filteredDataList) {
+      let filteredData = this.state.dateList.filter(data => data.name.includes(e.target.value))
+      console.log(filteredData)
+      this.setState({ filter: e.target.value, filteredDataList: filteredData })
+    }
+
+  }
+  inputOnchange(e) {
+    let selectedData = this.state.selectedData
+    selectedData['name'] = e.target.value
+    this.setState({ selectedData: selectedData })
+  }
+  
+  inputOnchangePortfolioName(e){
+    let selectedData = this.state.selectedData
+    selectedData['portfolioName'] = e.target.value
+    this.setState({ selectedData: selectedData })
+
+  }
+
+  inputOnchangeGroupName(e){
+    this.setState({selectedGroup:e.target.value})
+    this.loadDataList(e.target.value)
+  }
+  
   render() {
+    let trData = this.state.filteredDataList ? this.state.filteredDataList.map((data, i) => {
+      return (
+        <tr key={i}>
+          <th> {i}</th>
+          <td>{data.serviceName}</td>
+          <td><button className="btn btn-success btn-sm" onClick={() => this.getEdit(data._links.self.href)}>
+            <FontAwesomeIcon icon={faPencil} /></button>
+            &nbsp;
+            <button className="btn btn-danger btn-sm" onClick={() => this.delete(data._links.self.href)}>
+              <FontAwesomeIcon icon={faTrash} /></button>
+          </td>
+        </tr>
+      )
+    }) : null
+
+    let updateOrAdd = () => {
+      if (this.state.showUpdate) {
+        return (
+          <button type="submit" className="btn btn-primary"
+            onClick={() => this.update(this.state.selectedData._links.self.href)}>
+            Update
+          </button>
+        )
+      } else if (this.state.showAdd) {
+        return (
+          <button type="submit" className="btn btn-primary"
+            onClick={() => this.add()}>
+            Add
+          </button>
+        )
+      }
+    }
+    let spinner = () => {
+      if (this.state.showSpin) {
+        return (<Spinner />)
+      }
+    }
+
+    let Option=this.state.parentDataList?this.state.parentDataList.map((data,i)=><option key={i} value={data.name}>{data.name}</option>):null;
     return (
       <div>
-        Services
+        {spinner()}
+        <h3>Services</h3>
+        <div className="row">
+          <div className="col-4">
+            <div className="card shadow">
+              <div className="card-header">
+                <p>List of Services for Servcie Group</p>
+                <select className="form-select shadow-sm" id="portfolioName" aria-describedby="portfolioName" name="selectedData.portfolioName"
+                  onChange={(e) => this.inputOnchangeGroupName(e)}  value={this.state.selectedGroup}>
+                      <option value=""></option>{Option}
+                  </select>
+              </div>
+              <div className="card-body">
+                <div className="card-title">
+                  <div className="input-group mb-3">
+                    <input type="text" className="form-control" placeholder="filter" value={this.state.filter} onChange={(e) => this.filter(e)} />
+                  </div>
+                </div>
+                <div className="scroller">
+                  <table className="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Service Name</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {trData}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-8">
+            <div className="card shadow">
+              <div className="card-header">
+                <button className="btn btn-sm btn-warning" onClick={() => this.new()} ><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; Add New</button>
+              </div>
+              <div className="card-body">
+                <div className="mb-3">
+                  <label htmlFor="Group name" className="form-label">Group Name</label>
+                  <input type="text" className="form-control" id="name" aria-describedby="name" name="selectedData.name"
+                    value={this.state.selectedData.name} onChange={(e) => this.inputOnchange(e)} />
+                  <div id="name" className="form-text">Please enter the Service Group name</div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="portfolio name" className="form-label">Portfolio name</label>
+                  <select className="form-select" id="portfolioName" aria-describedby="portfolioName" name="selectedData.portfolioName"
+                  onChange={(e) => this.inputOnchangePortfolioName(e)}  value={this.state.selectedData.portfolioName}>
+                      {Option}
+                  </select>
+                  <div id="name" className="form-text">Please Select the Portfolio name</div>
+                </div>
+                {updateOrAdd()}
+              </div>
+            </div>
+          </div>
         </div>
-        
+
+      </div>
+
     );
   }
 }

@@ -4,8 +4,10 @@ import { Component } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencil, faRefresh, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Spinner from "./component/spinner";
+import { domain } from "./constants";
 
-const urlData = "http://localhost:9000/api/group";
+const urlData = domain()+"api/group";
+const portfolioUrl=domain()+"api/portfolio";
 
 class ServiceGroup extends Component {
 
@@ -15,6 +17,7 @@ class ServiceGroup extends Component {
     selectedData: {
       name: ""
     },
+    parentDataList:[],
     filter: "",
     showUpdate: false,
     showAdd: false,
@@ -24,6 +27,7 @@ class ServiceGroup extends Component {
 
   componentDidMount() {
     this.loadDataList()
+    this.loadParentDataList()
   }
 
   loadDataList() {
@@ -33,6 +37,21 @@ class ServiceGroup extends Component {
         console.log(resp)
         let serviceGroups = resp.data._embedded.serviceGroups
         this.setState({ dateList: serviceGroups, filteredDataList: serviceGroups, showSpin: false })
+      },
+      err => {
+        console.log(err)
+        this.setState({ showSpin: false })
+      }
+    )
+  }
+
+  loadParentDataList() {
+    this.setState({ showSpin: true })
+    axios.get(portfolioUrl).then(
+      resp => {
+        console.log(resp)
+        let portfolios = resp.data._embedded.portfolios
+        this.setState({ parentDataList: portfolios,showSpin: false  })
       },
       err => {
         console.log(err)
@@ -72,7 +91,8 @@ class ServiceGroup extends Component {
 
   update(url) {
     let data = {
-      "name": this.state.selectedData.name
+      "name": this.state.selectedData.name,
+      "portfolioName":this.state.selectedData.portfolioName
     }
     this.setState({ showSpin: true })
     axios.patch(url, data).then(
@@ -99,7 +119,8 @@ class ServiceGroup extends Component {
       return
     }
     let data = {
-      "name": this.state.selectedData.name
+      "name": this.state.selectedData.name,
+      "portfolioName":this.state.selectedData.portfolioName
     }
     this.setState({ showSpin: true })
     axios.post(urlData, data).then(
@@ -127,17 +148,25 @@ class ServiceGroup extends Component {
     selectedData['name'] = e.target.value
     this.setState({ selectedData: selectedData })
   }
+  
+  inputOnchangePortfolioName(e){
+    let selectedData = this.state.selectedData
+    selectedData['portfolioName'] = e.target.value
+    this.setState({ selectedData: selectedData })
+  }
 
+  
   render() {
-    let trData = this.state.filteredDataList ? this.state.filteredDataList.map((portfolio, i) => {
+    let trData = this.state.filteredDataList ? this.state.filteredDataList.map((data, i) => {
       return (
         <tr key={i}>
           <th> {i}</th>
-          <td>{portfolio.name}</td>
-          <td><button className="btn btn-success btn-sm" onClick={() => this.getEdit(portfolio._links.self.href)}>
+          <td>{data.name}</td>
+          <td>{data.portfolioName}</td>
+          <td><button className="btn btn-success btn-sm" onClick={() => this.getEdit(data._links.self.href)}>
             <FontAwesomeIcon icon={faPencil} /></button>
             &nbsp;
-            <button className="btn btn-danger btn-sm" onClick={() => this.delete(portfolio._links.self.href)}>
+            <button className="btn btn-danger btn-sm" onClick={() => this.delete(data._links.self.href)}>
               <FontAwesomeIcon icon={faTrash} /></button>
           </td>
         </tr>
@@ -167,6 +196,7 @@ class ServiceGroup extends Component {
       }
     }
 
+    let Option=this.state.parentDataList?this.state.parentDataList.map((data,i)=><option key={i} value={data.name}>{data.name}</option>):null;
     return (
       <div>
         {spinner()}
@@ -191,7 +221,8 @@ class ServiceGroup extends Component {
                     <thead>
                       <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Name</th>
+                        <th scope="col">Group Name</th>
+                        <th scope="col">Portfolio Name</th>
                         <th scope="col">Action</th>
                       </tr>
                     </thead>
@@ -200,9 +231,6 @@ class ServiceGroup extends Component {
                     </tbody>
                   </table>
                 </div>
-              </div>
-              <div className="card-footer">
-                hello
               </div>
             </div>
           </div>
@@ -213,10 +241,18 @@ class ServiceGroup extends Component {
               </div>
               <div className="card-body">
                 <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Name</label>
+                  <label htmlFor="Group name" className="form-label">Group Name</label>
                   <input type="text" className="form-control" id="name" aria-describedby="name" name="selectedData.name"
                     value={this.state.selectedData.name} onChange={(e) => this.inputOnchange(e)} />
                   <div id="name" className="form-text">Please enter the Service Group name</div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="portfolio name" className="form-label">Portfolio name</label>
+                  <select className="form-select" id="portfolioName" aria-describedby="portfolioName" name="selectedData.portfolioName"
+                  onChange={(e) => this.inputOnchangePortfolioName(e)}  value={this.state.selectedData.portfolioName}>
+                      {Option}
+                  </select>
+                  <div id="name" className="form-text">Please Select the Portfolio name</div>
                 </div>
                 {updateOrAdd()}
               </div>

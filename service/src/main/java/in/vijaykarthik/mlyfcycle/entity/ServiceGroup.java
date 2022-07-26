@@ -15,8 +15,19 @@ public class ServiceGroup {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     String name;
+
+    @Column(nullable = false)
+    String portfolioName;
+
+    public String getPortfolioName() {
+        return this.portfolioName;
+    }
+
+    public void setPortfolioName(String portfolioName) {
+        this.portfolioName = portfolioName;
+    }
 
     
     public Long getId() {
@@ -42,22 +53,24 @@ public class ServiceGroup {
         if (!(o instanceof ServiceGroup)) {
             return false;
         }
-        ServiceGroup group = (ServiceGroup) o;
-        return Objects.equals(id, group.id) && Objects.equals(name, group.name);
+        ServiceGroup serviceGroup = (ServiceGroup) o;
+        return Objects.equals(id, serviceGroup.id) && Objects.equals(name, serviceGroup.name) && Objects.equals(portfolioName, serviceGroup.portfolioName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, portfolioName);
     }
+
 
     @Override
     public String toString() {
         return "{" +
             " id='" + getId() + "'" +
             ", name='" + getName() + "'" +
+            ", portfolioName='" + getPortfolioName() + "'" +
             "}";
     }
-
+ 
 
 }

@@ -26,8 +26,7 @@ public class Services {
     String Owner;
     @Column
     String groupName;
-    @Column
-    String portfolioName;
+
 
     public Long getId() {
         return this.id;
@@ -85,13 +84,7 @@ public class Services {
         this.groupName = groupName;
     }
 
-    public String getPortfolioName() {
-        return this.portfolioName;
-    }
 
-    public void setPortfolioName(String portfolioName) {
-        this.portfolioName = portfolioName;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -101,12 +94,14 @@ public class Services {
             return false;
         }
         Services services = (Services) o;
-        return Objects.equals(id, services.id) && Objects.equals(serviceName, services.serviceName) && Objects.equals(serviceDescription, services.serviceDescription) && Objects.equals(codeRepoUrl, services.codeRepoUrl) && Objects.equals(ciCdPlanUrl, services.ciCdPlanUrl) && Objects.equals(Owner, services.Owner) && Objects.equals(groupName, services.groupName) && Objects.equals(portfolioName, services.portfolioName);
+        return Objects.equals(id, services.id) && Objects.equals(serviceName, services.serviceName) && 
+        Objects.equals(serviceDescription, services.serviceDescription) && Objects.equals(codeRepoUrl, services.codeRepoUrl) && 
+        Objects.equals(ciCdPlanUrl, services.ciCdPlanUrl) && Objects.equals(Owner, services.Owner) && Objects.equals(groupName, services.groupName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, serviceName, serviceDescription, codeRepoUrl, ciCdPlanUrl, Owner, groupName, portfolioName);
+        return Objects.hash(id, serviceName, serviceDescription, codeRepoUrl, ciCdPlanUrl, Owner, groupName);
     }
 
     @Override
@@ -119,7 +114,6 @@ public class Services {
             ", ciCdPlanUrl='" + getCiCdPlanUrl() + "'" +
             ", Owner='" + getOwner() + "'" +
             ", groupName='" + getGroupName() + "'" +
-            ", portfolioName='" + getPortfolioName() + "'" +
             "}";
     }
     

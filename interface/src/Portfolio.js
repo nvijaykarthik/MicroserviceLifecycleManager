@@ -4,8 +4,9 @@ import { Component } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencil, faRefresh, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Spinner from "./component/spinner";
+import { domain } from "./constants";
 
-const urlData = "http://localhost:9000/api/portfolio";
+const urlData = domain()+"api/portfolio";
 
 class Portfolio extends Component {
 
@@ -199,9 +200,6 @@ class Portfolio extends Component {
                     </tbody>
                   </table>
                 </div>
-              </div>
-              <div className="card-footer">
-                hello
               </div>
             </div>
           </div>
