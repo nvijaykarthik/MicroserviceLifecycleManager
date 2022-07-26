@@ -15,7 +15,8 @@ class ServiceGroup extends Component {
     dateList: [],
     filteredDataList: [],
     selectedData: {
-      name: ""
+      name: "",
+      portfolioName:""
     },
     parentDataList:[],
     filter: "",
@@ -39,7 +40,7 @@ class ServiceGroup extends Component {
         this.setState({ dateList: serviceGroups, filteredDataList: serviceGroups, showSpin: false })
       },
       err => {
-        console.log(err)
+        alert("Error While getting service group")
         this.setState({ showSpin: false })
       }
     )
@@ -54,7 +55,7 @@ class ServiceGroup extends Component {
         this.setState({ parentDataList: portfolios,showSpin: false  })
       },
       err => {
-        console.log(err)
+        alert("Error While getting portfolio list")
         this.setState({ showSpin: false })
       }
     )
@@ -69,7 +70,7 @@ class ServiceGroup extends Component {
         this.setState({ selectedData: portFolio, showUpdate: true, showAdd: false, showSpin: false })
       },
       err => {
-        console.log(err)
+        alert("Error While getting" + url)
         this.setState({ showSpin: false })
       }
     )
@@ -83,7 +84,7 @@ class ServiceGroup extends Component {
         this.loadDataList();
       },
       err => {
-        console.log(err)
+        alert("Error While Deleting data")
         this.setState({ showSpin: false })
       }
     )
@@ -101,7 +102,7 @@ class ServiceGroup extends Component {
         this.loadDataList();
       },
       err => {
-        console.log(err)
+        alert("Error While Updating data")
         this.setState({ showSpin: false })
       }
     )
@@ -110,6 +111,7 @@ class ServiceGroup extends Component {
   new() {
     let selectedData = this.state.selectedData
     selectedData['name'] = ""
+    selectedData['portfolioName']=""
     this.setState({ selectedData: selectedData, showAdd: true, showUpdate: false })
   }
 
@@ -129,7 +131,7 @@ class ServiceGroup extends Component {
         this.loadDataList();
       },
       err => {
-        console.log(err)
+        alert("Error While Adding data")
         this.setState({ showSpin: false })
       }
     )

@@ -6,8 +6,10 @@ import { faPencil, faRefresh, faPlusCircle, faTrash } from '@fortawesome/free-so
 import Spinner from "./component/spinner";
 import { domain } from "./constants";
 
-const urlData = domain()+"api/service/search/byGroup?groupName=";
-const groupUrl=domain()+"api/group";
+const urlDataLoad = domain() + "api/service/search/byGroup?groupName=";
+const groupUrl = domain() + "api/group";
+
+const urlData = domain() + "api/service";
 
 class Services extends Component {
 
@@ -15,10 +17,15 @@ class Services extends Component {
     dateList: [],
     filteredDataList: [],
     selectedData: {
-      name: ""
+      "serviceName": "",
+      "serviceDescription": "",
+      "codeRepoUrl": "",
+      "ciCdPlanUrl": "",
+      "Owner": "",
+      "groupName": "",
     },
-    selectedGroup:"",
-    parentDataList:[],
+    selectedGroup: "",
+    parentDataList: [],
     filter: "",
     showUpdate: false,
     showAdd: false,
@@ -27,19 +34,19 @@ class Services extends Component {
 
 
   componentDidMount() {
-      this.loadParentDataList()
+    this.loadParentDataList()
   }
 
   loadDataList(group) {
     this.setState({ showSpin: true })
-    axios.get(urlData.concat(group)).then(
+    axios.get(urlDataLoad.concat(group)).then(
       resp => {
         console.log(resp)
         let serviceses = resp.data._embedded.serviceses
         this.setState({ dateList: serviceses, filteredDataList: serviceses, showSpin: false })
       },
       err => {
-        console.log(err)
+        alert("Error While getting  serviceses for service group "+group)
         this.setState({ showSpin: false })
       }
     )
@@ -51,10 +58,10 @@ class Services extends Component {
       resp => {
         console.log(resp)
         let serviceGroups = resp.data._embedded.serviceGroups
-        this.setState({ parentDataList: serviceGroups,showSpin: false  })
+        this.setState({ parentDataList: serviceGroups, showSpin: false })
       },
       err => {
-        console.log(err)
+        alert("Error While getting service group list")
         this.setState({ showSpin: false })
       }
     )
@@ -65,11 +72,11 @@ class Services extends Component {
     axios.get(url).then(
       resp => {
         console.log(resp)
-        let portFolio = resp.data
-        this.setState({ selectedData: portFolio, showUpdate: true, showAdd: false, showSpin: false })
+        let serviceses = resp.data
+        this.setState({ selectedData: serviceses, showUpdate: true, showAdd: false, showSpin: false })
       },
       err => {
-        console.log(err)
+        alert("Error While Getting :"+url)
         this.setState({ showSpin: false })
       }
     )
@@ -80,56 +87,83 @@ class Services extends Component {
     axios.delete(url).then(
       resp => {
         console.log(resp)
-        this.loadDataList();
+        this.loadDataList(this.state.selectedGroup);
       },
       err => {
-        console.log(err)
+        alert("Error While Deleting")
         this.setState({ showSpin: false })
       }
     )
   }
 
   update(url) {
+    if(this.state.selectedGroup===""){
+      alert("Please select the Service Group");
+      return 
+    }
     let data = {
-      "name": this.state.selectedData.name,
-      "portfolioName":this.state.selectedData.portfolioName
+      "serviceName": this.state.selectedData.serviceName,
+      "serviceDescription": this.state.selectedData.serviceDescription,
+      "codeRepoUrl": this.state.selectedData.codeRepoUrl,
+      "ciCdPlanUrl": this.state.selectedData.ciCdPlanUrl,
+      "owner": this.state.selectedData.owner,
+      "groupName": this.state.selectedData.groupName
     }
     this.setState({ showSpin: true })
     axios.patch(url, data).then(
       resp => {
         console.log(resp)
-        this.loadDataList();
+        this.loadDataList(this.state.selectedGroup);
       },
       err => {
-        console.log(err)
+        alert("Error While Updating data")
         this.setState({ showSpin: false })
       }
     )
   }
 
   new() {
+    if(this.state.selectedGroup===""){
+      alert("Please select the Service Group");
+      return 
+    }
     let selectedData = this.state.selectedData
-    selectedData['name'] = ""
+    selectedData['serviceName'] = "";
+    selectedData['serviceDescription'] = "";
+    selectedData['codeRepoUrl'] = "";
+    selectedData['ciCdPlanUrl'] = "";
+    selectedData['owner'] = "";
     this.setState({ selectedData: selectedData, showAdd: true, showUpdate: false })
   }
 
   add() {
-    if (this.state.selectedData.name === "") {
-      alert("Name is empty");
+    if(this.state.selectedGroup===""){
+      alert("Please select the Service Group");
+      return 
+    }
+    if (this.state.selectedData.serviceName === "") {
+      alert("serviceName is empty");
       return
     }
     let data = {
-      "name": this.state.selectedData.name,
-      "portfolioName":this.state.selectedData.portfolioName
+      "serviceName": this.state.selectedData.serviceName,
+      "serviceDescription": this.state.selectedData.serviceDescription,
+      "codeRepoUrl": this.state.selectedData.codeRepoUrl,
+      "ciCdPlanUrl": this.state.selectedData.ciCdPlanUrl,
+      "owner": this.state.selectedData.owner,
+      "groupName": this.state.selectedData.groupName
     }
+    console.log(this.state.selectedData)
+    console.log(data)
     this.setState({ showSpin: true })
     axios.post(urlData, data).then(
       resp => {
         console.log(resp)
-        this.loadDataList();
+        this.setState({ showSpin: false })
+        this.loadDataList(this.state.selectedGroup);
       },
       err => {
-        console.log(err)
+        alert("Error While Adding data")
         this.setState({ showSpin: false })
       }
     )
@@ -137,30 +171,27 @@ class Services extends Component {
 
   filter(e) {
     if (this.state.filteredDataList) {
-      let filteredData = this.state.dateList.filter(data => data.name.includes(e.target.value))
+      let filteredData = this.state.dateList.filter(data => data.serviceName.includes(e.target.value))
       console.log(filteredData)
       this.setState({ filter: e.target.value, filteredDataList: filteredData })
     }
-
   }
+
   inputOnchange(e) {
     let selectedData = this.state.selectedData
-    selectedData['name'] = e.target.value
+    selectedData[e.target.name] = e.target.value
+    console.log(selectedData)
     this.setState({ selectedData: selectedData })
   }
-  
-  inputOnchangePortfolioName(e){
+
+
+  inputOnchangeGroupName(e) {
     let selectedData = this.state.selectedData
-    selectedData['portfolioName'] = e.target.value
-    this.setState({ selectedData: selectedData })
-
-  }
-
-  inputOnchangeGroupName(e){
-    this.setState({selectedGroup:e.target.value})
+    selectedData['groupName'] = e.target.value
+    this.setState({ selectedGroup: e.target.value, selectedData: selectedData })
     this.loadDataList(e.target.value)
   }
-  
+
   render() {
     let trData = this.state.filteredDataList ? this.state.filteredDataList.map((data, i) => {
       return (
@@ -200,7 +231,7 @@ class Services extends Component {
       }
     }
 
-    let Option=this.state.parentDataList?this.state.parentDataList.map((data,i)=><option key={i} value={data.name}>{data.name}</option>):null;
+    let Option = this.state.parentDataList ? this.state.parentDataList.map((data, i) => <option key={i} value={data.name}>{data.name}</option>) : null;
     return (
       <div>
         {spinner()}
@@ -210,10 +241,10 @@ class Services extends Component {
             <div className="card shadow">
               <div className="card-header">
                 <p>List of Services for Servcie Group</p>
-                <select className="form-select shadow-sm" id="portfolioName" aria-describedby="portfolioName" name="selectedData.portfolioName"
-                  onChange={(e) => this.inputOnchangeGroupName(e)}  value={this.state.selectedGroup}>
-                      <option value=""></option>{Option}
-                  </select>
+                <select className="form-select shadow-sm" name="selectedGroup"
+                  onChange={(e) => this.inputOnchangeGroupName(e)} value={this.state.selectedGroup}>
+                  <option value=""></option>{Option}
+                </select>
               </div>
               <div className="card-body">
                 <div className="card-title">
@@ -245,18 +276,40 @@ class Services extends Component {
               </div>
               <div className="card-body">
                 <div className="mb-3">
-                  <label htmlFor="Group name" className="form-label">Group Name</label>
-                  <input type="text" className="form-control" id="name" aria-describedby="name" name="selectedData.name"
-                    value={this.state.selectedData.name} onChange={(e) => this.inputOnchange(e)} />
-                  <div id="name" className="form-text">Please enter the Service Group name</div>
+                  <label htmlFor="serviceName" className="form-label">Service Name</label>
+                  <input type="text" className="form-control" name="serviceName"
+                    value={this.state.selectedData.serviceName} onChange={(e) => this.inputOnchange(e)} />
+                  <div id="name" className="form-text">Please enter the Service name</div>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="portfolio name" className="form-label">Portfolio name</label>
-                  <select className="form-select" id="portfolioName" aria-describedby="portfolioName" name="selectedData.portfolioName"
-                  onChange={(e) => this.inputOnchangePortfolioName(e)}  value={this.state.selectedData.portfolioName}>
-                      {Option}
-                  </select>
-                  <div id="name" className="form-text">Please Select the Portfolio name</div>
+                  <label htmlFor="serviceDescription" className="form-label">Service Description</label>
+                  <input type="text" className="form-control" name="serviceDescription"
+                    value={this.state.selectedData.serviceDescription} onChange={(e) => this.inputOnchange(e)} />
+                  <div id="name" className="form-text">Please enter the Service Description</div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="codeRepoUrl" className="form-label">Code repository </label>
+                  <input type="text" className="form-control" name="codeRepoUrl"
+                    value={this.state.selectedData.codeRepoUrl} onChange={(e) => this.inputOnchange(e)} />
+                  <div id="name" className="form-text">Url for ur code base</div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="ciCdPlanUrl" className="form-label">Continues Integration and Deployment</label>
+                  <input type="text" className="form-control" name="ciCdPlanUrl"
+                    value={this.state.selectedData.ciCdPlanUrl} onChange={(e) => this.inputOnchange(e)} />
+                  <div id="name" className="form-text">Url for your CI/CD pipeline</div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="owner" className="form-label">Owner</label>
+                  <input type="text" className="form-control" name="owner"
+                    value={this.state.selectedData.owner} onChange={(e) => this.inputOnchange(e)} />
+                  <div id="name" className="form-text">Please enter the Service Owner</div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="groupName" className="form-label">Service Group Name</label>
+                  <input type="text" className="form-control" name="groupName"
+                    value={this.state.selectedData.groupName} readOnly />
+                  <div id="name" className="form-text">Please enter the Service name</div>
                 </div>
                 {updateOrAdd()}
               </div>

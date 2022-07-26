@@ -35,7 +35,7 @@ class Portfolio extends Component {
         this.setState({ dateList: portfolios, filteredDataList: portfolios, showSpin: false })
       },
       err => {
-        console.log(err)
+        alert("Error While getting portfolio list")
         this.setState({ showSpin: false })
       }
     )
@@ -50,7 +50,7 @@ class Portfolio extends Component {
         this.setState({ selectedData: portFolio, showUpdate: true, showAdd: false, showSpin: false })
       },
       err => {
-        console.log(err)
+        alert("Error While getting data for"+url)
         this.setState({ showSpin: false })
       }
     )
@@ -64,7 +64,7 @@ class Portfolio extends Component {
         this.loadDataList();
       },
       err => {
-        console.log(err)
+        alert("Error While deleting")
         this.setState({ showSpin: false })
       }
     )
@@ -81,7 +81,7 @@ class Portfolio extends Component {
         this.loadDataList();
       },
       err => {
-        console.log(err)
+        alert("Error While Updating")
         this.setState({ showSpin: false })
       }
     )
@@ -108,7 +108,7 @@ class Portfolio extends Component {
         this.loadDataList();
       },
       err => {
-        console.log(err)
+        alert("Error While Adding")
         this.setState({ showSpin: false })
       }
     )
