@@ -6,7 +6,9 @@ import { faPencil, faRefresh, faPlusCircle, faTrash } from '@fortawesome/free-so
 import Spinner from "./component/spinner";
 import { domain } from "./constants";
 
-const urlData = domain()+"api/portfolio";
+import Swal from 'sweetalert2'
+
+const urlData = domain() + "api/portfolio";
 
 class Portfolio extends Component {
 
@@ -30,12 +32,17 @@ class Portfolio extends Component {
     this.setState({ showSpin: true })
     axios.get(urlData).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         let portfolios = resp.data._embedded.portfolios
         this.setState({ dateList: portfolios, filteredDataList: portfolios, showSpin: false })
       },
       err => {
-        alert("Error While getting portfolio list")
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error While getting portfolio list',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -45,12 +52,17 @@ class Portfolio extends Component {
     this.setState({ showSpin: true })
     axios.get(url).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         let portFolio = resp.data
         this.setState({ selectedData: portFolio, showUpdate: true, showAdd: false, showSpin: false })
       },
       err => {
-        alert("Error While getting data for"+url)
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While getting data for" + url,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -60,11 +72,16 @@ class Portfolio extends Component {
     this.setState({ showSpin: true })
     axios.delete(url).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.loadDataList();
       },
       err => {
-        alert("Error While deleting")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While deleting",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -77,11 +94,16 @@ class Portfolio extends Component {
     this.setState({ showSpin: true })
     axios.patch(url, data).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.loadDataList();
       },
       err => {
-        alert("Error While Updating")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While Updating",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -104,11 +126,16 @@ class Portfolio extends Component {
     this.setState({ showSpin: true })
     axios.post(urlData, data).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.loadDataList();
       },
       err => {
-        alert("Error While Adding")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While Adding",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -116,9 +143,9 @@ class Portfolio extends Component {
 
   filter(e) {
     if (this.state.filteredDataList) {
-    let filteredData = this.state.dateList.filter(data => data.name.includes(e.target.value))
-    console.log(filteredData)
-    this.setState({ filter: e.target.value, filteredDataList: filteredData })
+      let filteredData = this.state.dateList.filter(data => data.name.includes(e.target.value))
+      // console.log(filteredData)
+      this.setState({ filter: e.target.value, filteredDataList: filteredData })
     }
 
   }
@@ -142,7 +169,7 @@ class Portfolio extends Component {
           </td>
         </tr>
       )
-    }):null
+    }) : null
 
     let updateOrAdd = () => {
       if (this.state.showUpdate) {
@@ -172,7 +199,7 @@ class Portfolio extends Component {
         {spinner()}
         <h3>Portfolio</h3>
         <div className="row">
-          <div className="col-4">
+          <div className="col-sm-4">
             <div className="card shadow">
               <div className="card-header">
                 <p>List of Portfolio
@@ -203,7 +230,7 @@ class Portfolio extends Component {
               </div>
             </div>
           </div>
-          <div className="col-8">
+          <div className="col-sm-8">
             <div className="card shadow">
               <div className="card-header">
                 <button className="btn btn-sm btn-warning" onClick={() => this.new()} ><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; Add New</button>

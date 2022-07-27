@@ -2,9 +2,11 @@ import axios from "axios";
 import { Component } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencil, faRefresh, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPencil, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Spinner from "./component/spinner";
 import { domain } from "./constants";
+
+import Swal from 'sweetalert2'
 
 const urlDataLoad = domain() + "api/service/search/byGroup?groupName=";
 const groupUrl = domain() + "api/group";
@@ -41,12 +43,18 @@ class Services extends Component {
     this.setState({ showSpin: true })
     axios.get(urlDataLoad.concat(group)).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         let serviceses = resp.data._embedded.serviceses
         this.setState({ dateList: serviceses, filteredDataList: serviceses, showSpin: false })
       },
       err => {
-        alert("Error While getting  serviceses for service group "+group)
+
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While getting services for the service group" + group,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -56,12 +64,17 @@ class Services extends Component {
     this.setState({ showSpin: true })
     axios.get(groupUrl).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         let serviceGroups = resp.data._embedded.serviceGroups
         this.setState({ parentDataList: serviceGroups, showSpin: false })
       },
       err => {
-        alert("Error While getting service group list")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While getting service group list",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -71,12 +84,17 @@ class Services extends Component {
     this.setState({ showSpin: true })
     axios.get(url).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         let serviceses = resp.data
         this.setState({ selectedData: serviceses, showUpdate: true, showAdd: false, showSpin: false })
       },
       err => {
-        alert("Error While Getting :"+url)
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While getting " + url,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -86,20 +104,25 @@ class Services extends Component {
     this.setState({ showSpin: true })
     axios.delete(url).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.loadDataList(this.state.selectedGroup);
       },
       err => {
-        alert("Error While Deleting")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While deleting",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
   }
 
   update(url) {
-    if(this.state.selectedGroup===""){
+    if (this.state.selectedGroup === "") {
       alert("Please select the Service Group");
-      return 
+      return
     }
     let data = {
       "serviceName": this.state.selectedData.serviceName,
@@ -112,20 +135,25 @@ class Services extends Component {
     this.setState({ showSpin: true })
     axios.patch(url, data).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.loadDataList(this.state.selectedGroup);
       },
       err => {
-        alert("Error While Updating data")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While updating",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
   }
 
   new() {
-    if(this.state.selectedGroup===""){
+    if (this.state.selectedGroup === "") {
       alert("Please select the Service Group");
-      return 
+      return
     }
     let selectedData = this.state.selectedData
     selectedData['serviceName'] = "";
@@ -137,9 +165,9 @@ class Services extends Component {
   }
 
   add() {
-    if(this.state.selectedGroup===""){
+    if (this.state.selectedGroup === "") {
       alert("Please select the Service Group");
-      return 
+      return
     }
     if (this.state.selectedData.serviceName === "") {
       alert("serviceName is empty");
@@ -153,17 +181,22 @@ class Services extends Component {
       "owner": this.state.selectedData.owner,
       "groupName": this.state.selectedData.groupName
     }
-    console.log(this.state.selectedData)
-    console.log(data)
+    // console.log(this.state.selectedData)
+    // console.log(data)
     this.setState({ showSpin: true })
     axios.post(urlData, data).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.setState({ showSpin: false })
         this.loadDataList(this.state.selectedGroup);
       },
       err => {
-        alert("Error While Adding data")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While adding",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -172,7 +205,7 @@ class Services extends Component {
   filter(e) {
     if (this.state.filteredDataList) {
       let filteredData = this.state.dateList.filter(data => data.serviceName.includes(e.target.value))
-      console.log(filteredData)
+      // console.log(filteredData)
       this.setState({ filter: e.target.value, filteredDataList: filteredData })
     }
   }
@@ -180,7 +213,7 @@ class Services extends Component {
   inputOnchange(e) {
     let selectedData = this.state.selectedData
     selectedData[e.target.name] = e.target.value
-    console.log(selectedData)
+    // console.log(selectedData)
     this.setState({ selectedData: selectedData })
   }
 

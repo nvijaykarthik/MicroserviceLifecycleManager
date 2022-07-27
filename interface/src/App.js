@@ -4,11 +4,13 @@ import Home from "./Home";
 import Portfolio from "./Portfolio";
 import ServiceGroup from "./ServiceGroup";
 import Services from "./Services";
-
+import ServiceChanges  from "./ServiceChanges";
 class App extends Component {
   render() {
     return (
       <div className="browser">
+        
+        <div className="container p-2">
         <nav className="navbar navbar-expand-lg navbar-dark  bg-dark shadow p-2 mb-2 rounded">
           <div className="container">
             <Link to="/" className="navbar-brand">Microservice Lifecycle manager</Link>
@@ -19,6 +21,9 @@ class App extends Component {
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
                   <Link to="/" className="nav-link">Home</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/serviceChanges" className="nav-link">Service Change</Link>
                 </li>
                 <li className="nav-item dropdown">
                   <Link to="" className="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -31,7 +36,7 @@ class App extends Component {
                 </li>
                 <li className="nav-item">
                     <Link to="/services" className="nav-link">Services</Link>
-                  </li>
+                </li>
               </ul>
               <ul className="navbar-nav d-flex">
                 <li className="nav-item dropdown">
@@ -49,12 +54,12 @@ class App extends Component {
             </div>
           </div>
         </nav>
-        <div className="container p-2">
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/portfolio" element={<Portfolio />}></Route>
           <Route path="/serviceGroup" element={<ServiceGroup />}></Route>
           <Route path="/services" element={<Services />}></Route>
+          <Route path="/serviceChanges" element={<ServiceChanges />}></Route>
         </Routes>
         </div>
       </div>

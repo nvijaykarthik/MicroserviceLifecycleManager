@@ -5,9 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencil, faRefresh, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import Spinner from "./component/spinner";
 import { domain } from "./constants";
+import Swal from 'sweetalert2'
 
-const urlData = domain()+"api/group";
-const portfolioUrl=domain()+"api/portfolio";
+const urlData = domain() + "api/group";
+const portfolioUrl = domain() + "api/portfolio";
 
 class ServiceGroup extends Component {
 
@@ -16,9 +17,9 @@ class ServiceGroup extends Component {
     filteredDataList: [],
     selectedData: {
       name: "",
-      portfolioName:""
+      portfolioName: ""
     },
-    parentDataList:[],
+    parentDataList: [],
     filter: "",
     showUpdate: false,
     showAdd: false,
@@ -35,12 +36,17 @@ class ServiceGroup extends Component {
     this.setState({ showSpin: true })
     axios.get(urlData).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         let serviceGroups = resp.data._embedded.serviceGroups
         this.setState({ dateList: serviceGroups, filteredDataList: serviceGroups, showSpin: false })
       },
       err => {
-        alert("Error While getting service group")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While getting service group",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -50,12 +56,17 @@ class ServiceGroup extends Component {
     this.setState({ showSpin: true })
     axios.get(portfolioUrl).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         let portfolios = resp.data._embedded.portfolios
-        this.setState({ parentDataList: portfolios,showSpin: false  })
+        this.setState({ parentDataList: portfolios, showSpin: false })
       },
       err => {
-        alert("Error While getting portfolio list")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While getting portfolio list",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -65,12 +76,17 @@ class ServiceGroup extends Component {
     this.setState({ showSpin: true })
     axios.get(url).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         let portFolio = resp.data
         this.setState({ selectedData: portFolio, showUpdate: true, showAdd: false, showSpin: false })
       },
       err => {
-        alert("Error While getting" + url)
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While getting" + url,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -80,11 +96,16 @@ class ServiceGroup extends Component {
     this.setState({ showSpin: true })
     axios.delete(url).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.loadDataList();
       },
       err => {
-        alert("Error While Deleting data")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While deleting",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -93,16 +114,21 @@ class ServiceGroup extends Component {
   update(url) {
     let data = {
       "name": this.state.selectedData.name,
-      "portfolioName":this.state.selectedData.portfolioName
+      "portfolioName": this.state.selectedData.portfolioName
     }
     this.setState({ showSpin: true })
     axios.patch(url, data).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.loadDataList();
       },
       err => {
-        alert("Error While Updating data")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While Updating",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -111,7 +137,7 @@ class ServiceGroup extends Component {
   new() {
     let selectedData = this.state.selectedData
     selectedData['name'] = ""
-    selectedData['portfolioName']=""
+    selectedData['portfolioName'] = ""
     this.setState({ selectedData: selectedData, showAdd: true, showUpdate: false })
   }
 
@@ -122,16 +148,21 @@ class ServiceGroup extends Component {
     }
     let data = {
       "name": this.state.selectedData.name,
-      "portfolioName":this.state.selectedData.portfolioName
+      "portfolioName": this.state.selectedData.portfolioName
     }
     this.setState({ showSpin: true })
     axios.post(urlData, data).then(
       resp => {
-        console.log(resp)
+        // console.log(resp)
         this.loadDataList();
       },
       err => {
-        alert("Error While Adding data")
+        Swal.fire({
+          title: 'Error!',
+          text: "Error While adding",
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        })
         this.setState({ showSpin: false })
       }
     )
@@ -140,7 +171,7 @@ class ServiceGroup extends Component {
   filter(e) {
     if (this.state.filteredDataList) {
       let filteredData = this.state.dateList.filter(data => data.name.includes(e.target.value))
-      console.log(filteredData)
+      // console.log(filteredData)
       this.setState({ filter: e.target.value, filteredDataList: filteredData })
     }
 
@@ -150,14 +181,14 @@ class ServiceGroup extends Component {
     selectedData['name'] = e.target.value
     this.setState({ selectedData: selectedData })
   }
-  
-  inputOnchangePortfolioName(e){
+
+  inputOnchangePortfolioName(e) {
     let selectedData = this.state.selectedData
     selectedData['portfolioName'] = e.target.value
     this.setState({ selectedData: selectedData })
   }
 
-  
+
   render() {
     let trData = this.state.filteredDataList ? this.state.filteredDataList.map((data, i) => {
       return (
@@ -198,7 +229,7 @@ class ServiceGroup extends Component {
       }
     }
 
-    let Option=this.state.parentDataList?this.state.parentDataList.map((data,i)=><option key={i} value={data.name}>{data.name}</option>):null;
+    let Option = this.state.parentDataList ? this.state.parentDataList.map((data, i) => <option key={i} value={data.name}>{data.name}</option>) : null;
     return (
       <div>
         {spinner()}
@@ -251,8 +282,8 @@ class ServiceGroup extends Component {
                 <div className="mb-3">
                   <label htmlFor="portfolio name" className="form-label">Portfolio name</label>
                   <select className="form-select" id="portfolioName" aria-describedby="portfolioName" name="selectedData.portfolioName"
-                  onChange={(e) => this.inputOnchangePortfolioName(e)}  value={this.state.selectedData.portfolioName}>
-                      {Option}
+                    onChange={(e) => this.inputOnchangePortfolioName(e)} value={this.state.selectedData.portfolioName}>
+                    {Option}
                   </select>
                   <div id="name" className="form-text">Please Select the Portfolio name</div>
                 </div>
