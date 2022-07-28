@@ -1,17 +1,18 @@
-$enable-shadows:true;
 
 $primary:#2c3f83;
 $secondary:#795468;
-$success:#009756;
+$success:#08d17a;
 $info:#0053cb;
 $warning:#dec800;
 $danger:#eb1800;
 $light:#ddf5ff;
 $dark:#001a6b;
 
-$border-radius: 1rem;
+$border-radius: .0rem;
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+
 
 body{
     background-color: $light;
@@ -19,4 +20,10 @@ body{
 .scroller{
     max-height: 550px;
     overflow-y: auto;
+}
+.card-header{
+    font-size: x-large;
+}
+.navbar{
+    border-radius: 0rem !important;
 }

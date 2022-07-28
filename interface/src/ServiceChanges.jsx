@@ -5,6 +5,10 @@ import Swal from "sweetalert2";
 
 import Spinner from "./component/spinner";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPencil, faRefresh, faPlusCircle, faTrash, faPenNib, faFloppyDisk, faSearch } from '@fortawesome/free-solid-svg-icons'
+
+
 export default function ServiceChanges() {
     const [showSpinner, setShowSpinner] = useState(false);
     const [selectedSvcData, setSelectedSvcData] = useState({
@@ -48,37 +52,44 @@ export default function ServiceChanges() {
             <h3>Service Changes</h3>
             <div className="row">
                 <div className="col-4">
-                    <div className="card text-light bg-info shadow">
+                    <div className="card text-light bg-info ">
                         <div className="card-header">
                             Search
                         </div>
                         <div className="card-body">
                             <div className="input-group mb-3">
-                                <input type="text" className="form-control" placeholder="story or feature"/>
+                                <input type="text" className="form-control" placeholder="story or feature" />
                                 <select class="form-select" aria-label="Default select example">
-                                <option value="story">Story</option>
-                                <option value="feature">Feature</option>
+                                    <option value="story">Story</option>
+                                    <option value="feature">Feature</option>
                                 </select>
-                                <button className="btn btn-warning" type="button">Search</button>
+                                <button className="btn btn-warning" type="button"><FontAwesomeIcon icon={faSearch} />&nbsp; Search</button>
                             </div>
-                       
                         </div>
                     </div>
                 </div>
 
-                <div className="col-4">
-                    <div className="card shadow">
+                <div className="col-8">
+                    <div className="card ">
                         <div className="card-header">
-                        <button className="btn btn-success" type="button" onClick={()=>newSvcChange()}>New SC</button>  Service Changes  
+                            Service Changes <button className="btn btn-sm btn-success float-end" type="button" onClick={() => newSvcChange()}>
+                                <FontAwesomeIcon icon={faPlusCircle} />&nbsp; New SC</button>
                         </div>
                         <div className="card-body">
                             <DisplaySvcChange selectedSvcData={selectedSvcData} setSelectedSvcData={setSelectedSvcData} newOrEdit={newOrEdit} />
                         </div>
                     </div>
+                    <div className="card  mt-4">
+                        <div className="card-header">
+                            Impacted service  <button className="btn btn-sm btn-success float-end" type="button" onClick={() => newSvcChange()}>
+                                <FontAwesomeIcon icon={faPlusCircle} />&nbsp; Add Impacted service</button>
+                        </div>
+                        <div className="card-body">
+                            Impacted service
+                        </div>
+                    </div>
                 </div>
-                <div className="col-4">
-                    Impacted service
-                </div>
+
             </div>
         </div>
     )
@@ -115,49 +126,53 @@ function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, newOrEdit }) {
             confirmButtonText: 'Ok'
         })
     }
-    let nre = (newOrEdit === 'new') ? <button type="button" className="btn btn-primary" onClick={() => add()}>Add</button> :
-        <button type="button" className="btn btn-primary" onClick={() => update()}>Update</button>
+    let nre = (newOrEdit === 'new') ? <button type="button" className="btn btn-primary" onClick={() => add()}>
+        <FontAwesomeIcon icon={faFloppyDisk} />&nbsp; Add</button> : 
+        (newOrEdit === 'update') ? <button type="button" className="btn btn-primary" onClick={() => update()}>
+            <FontAwesomeIcon icon={faPenNib} />&nbsp; Update</button> : null
 
     return (
         <div>
-            <div className="mb-2">
-                <label htmlFor="storyNumber" className="form-label">Story Number</label>
-                <input type="text" className="form-control" name="storyNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.storyNumber} />
-                <div name="storyNumber" className="form-text">Please enter Story Number</div>
+            <div className="row mb-3">
+                <div className="col-md-4">
+                    <label htmlFor="storyNumber" className="form-label">Story Number</label>
+                    <input type="text" className="form-control" name="storyNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.storyNumber} />
+                </div>
+                <div className="col-md-4">
+                    <label htmlFor="featureNumber" className="form-label">Feature Number</label>
+                    <input type="text" className="form-control" name="featureNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.featureNumber} />
+                </div>
+                <div className="col-md-4">
+                    <label htmlFor="epicNumber" className="form-label">Epic Number</label>
+                    <input type="text" className="form-control" name="epicNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.epicNumber} />
+                </div>
             </div>
-            <div className="mb-2">
-                <label htmlFor="featureNumber" className="form-label">Feature Number</label>
-                <input type="text" className="form-control" name="featureNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.featureNumber} />
-                <div name="featureNumber" className="form-text">Please enter Feature Number</div>
+            <div className="row mb-2">
+                <div className="col-md-4">
+                    <label htmlFor="storyLink" className="form-label">Story Link</label>
+                    <input type="text" className="form-control" name="storyLink" onChange={(e) => handleChange(e)} value={selectedSvcData.storyLink} />
+                </div>
+                <div className="col-md-4">
+                    <label htmlFor="storyDescription" className="form-label">Story Description</label>
+                    <input type="text" className="form-control" name="storyDescription" onChange={(e) => handleChange(e)} value={selectedSvcData.storyDescription} />
+                </div>
+                <div className="col-md-4">
+                    <label htmlFor="targetReleaseNumber" className="form-label">Target Release Number</label>
+                    <input type="text" className="form-control" name="targetReleaseNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.targetReleaseNumber} />
+                </div>
             </div>
-            <div className="mb-2">
-                <label htmlFor="epicNumber" className="form-label">Epic Number</label>
-                <input type="text" className="form-control" name="epicNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.epicNumber} />
-                <div name="epicNumber" className="form-text">Please enter Epic Number</div>
+            <div className="row mb-2">
+                <div className="col-md-4">
+                    <label htmlFor="targetReleaseDate" className="form-label">Target Release Date</label>
+                    <input type="text" className="form-control" name="targetReleaseDate" onChange={(e) => handleChange(e)} value={selectedSvcData.targetReleaseDate} />
+                </div>
+                <div className="col-md-8 pt-4 mt-2 float-end">
+                    {nre}
+                </div>
             </div>
-            <div className="mb-2">
-                <label htmlFor="storyLink" className="form-label">Story Link</label>
-                <input type="text" className="form-control" name="storyLink" onChange={(e) => handleChange(e)} value={selectedSvcData.storyLink} />
-                <div name="storyLink" className="form-text">Please enter Story link</div>
-            </div>
-            <div className="mb-2">
-                <label htmlFor="storyDescription" className="form-label">Story Description</label>
-                <input type="text" className="form-control" name="storyDescription" onChange={(e) => handleChange(e)} value={selectedSvcData.storyDescription} />
-                <div name="storyDescription" className="form-text">Please enter Story Description</div>
-            </div>
-            <div className="mb-2">
-                <label htmlFor="targetReleaseNumber" className="form-label">Target Release Number</label>
-                <input type="text" className="form-control" name="targetReleaseNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.targetReleaseNumber} />
-                <div name="targetReleaseNumber" className="form-text">Please enter Target Release Number</div>
-            </div>
-            <div className="mb-2">
-                <label htmlFor="targetReleaseDate" className="form-label">Target Release Date</label>
-                <input type="text" className="form-control" name="targetReleaseDate" onChange={(e) => handleChange(e)} value={selectedSvcData.targetReleaseDate} />
-                <div name="targetReleaseDate" className="form-text">Please enter Target Release Date</div>
-            </div>
-            <div className="col-12">
-                {nre}
-            </div>
+
+
+
         </div>
     )
     /*

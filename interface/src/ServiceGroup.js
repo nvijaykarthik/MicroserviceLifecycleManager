@@ -2,7 +2,7 @@ import axios from "axios";
 import { Component } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencil, faRefresh, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPencil, faRefresh, faPlusCircle, faTrash,faPenNib,faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 import Spinner from "./component/spinner";
 import { domain } from "./constants";
 import Swal from 'sweetalert2'
@@ -211,14 +211,14 @@ class ServiceGroup extends Component {
         return (
           <button type="submit" className="btn btn-primary"
             onClick={() => this.update(this.state.selectedData._links.self.href)}>
-            Update
+            <FontAwesomeIcon icon={faPenNib} /> &nbsp;Update
           </button>
         )
       } else if (this.state.showAdd) {
         return (
           <button type="submit" className="btn btn-primary"
             onClick={() => this.add()}>
-            Add
+            <FontAwesomeIcon icon={faFloppyDisk} /> &nbsp;Add
           </button>
         )
       }
@@ -236,10 +236,10 @@ class ServiceGroup extends Component {
         <h3>Service Group</h3>
         <div className="row">
           <div className="col-4">
-            <div className="card shadow">
+            <div className="card ">
               <div className="card-header">
                 <p>List of Service Group
-                  <button className="btn btn-sm btn-secondary float-end"
+                  <button className="btn btn-sm btn-secondary float-end mt-2"
                     onClick={() => this.loadDataList()}><FontAwesomeIcon icon={faRefresh} /></button>
                 </p>
               </div>
@@ -268,18 +268,18 @@ class ServiceGroup extends Component {
             </div>
           </div>
           <div className="col-8">
-            <div className="card shadow">
+            <div className="card ">
               <div className="card-header">
                 <button className="btn btn-sm btn-warning" onClick={() => this.new()} ><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; Add New</button>
               </div>
               <div className="card-body">
-                <div className="mb-3">
+                <div className="mb-2">
                   <label htmlFor="Group name" className="form-label">Group Name</label>
                   <input type="text" className="form-control" id="name" aria-describedby="name" name="selectedData.name"
                     value={this.state.selectedData.name} onChange={(e) => this.inputOnchange(e)} />
                   <div id="name" className="form-text">Please enter the Service Group name</div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label htmlFor="portfolio name" className="form-label">Portfolio name</label>
                   <select className="form-select" id="portfolioName" aria-describedby="portfolioName" name="selectedData.portfolioName"
                     onChange={(e) => this.inputOnchangePortfolioName(e)} value={this.state.selectedData.portfolioName}>

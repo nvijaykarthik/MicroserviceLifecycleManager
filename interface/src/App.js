@@ -10,7 +10,7 @@ class App extends Component {
     return (
       <div className="browser">
         
-        <div className="container p-2">
+       
         <nav className="navbar navbar-expand-lg navbar-dark  bg-dark shadow p-2 mb-2 rounded">
           <div className="container">
             <Link to="/" className="navbar-brand">Microservice Lifecycle manager</Link>
@@ -54,6 +54,7 @@ class App extends Component {
             </div>
           </div>
         </nav>
+        <div className="container p-2">
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/portfolio" element={<Portfolio />}></Route>

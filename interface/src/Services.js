@@ -2,7 +2,7 @@ import axios from "axios";
 import { Component } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencil, faPlusCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPencil, faRefresh, faPlusCircle, faTrash,faPenNib,faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 import Spinner from "./component/spinner";
 import { domain } from "./constants";
 
@@ -246,14 +246,14 @@ class Services extends Component {
         return (
           <button type="submit" className="btn btn-primary"
             onClick={() => this.update(this.state.selectedData._links.self.href)}>
-            Update
+           <FontAwesomeIcon icon={faPenNib} /> &nbsp; Update
           </button>
         )
       } else if (this.state.showAdd) {
         return (
           <button type="submit" className="btn btn-primary"
             onClick={() => this.add()}>
-            Add
+           <FontAwesomeIcon icon={faFloppyDisk} /> &nbsp; Add
           </button>
         )
       }
@@ -271,10 +271,10 @@ class Services extends Component {
         <h3>Services</h3>
         <div className="row">
           <div className="col-4">
-            <div className="card shadow">
+            <div className="card ">
               <div className="card-header">
                 <p>List of Services for Servcie Group</p>
-                <select className="form-select shadow-sm" name="selectedGroup"
+                <select className="form-select" name="selectedGroup"
                   onChange={(e) => this.inputOnchangeGroupName(e)} value={this.state.selectedGroup}>
                   <option value=""></option>{Option}
                 </select>
@@ -303,42 +303,42 @@ class Services extends Component {
             </div>
           </div>
           <div className="col-8">
-            <div className="card shadow">
+            <div className="card ">
               <div className="card-header">
-                <button className="btn btn-sm btn-warning" onClick={() => this.new()} ><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; Add New</button>
+                <button className="btn btn-sm btn-warning" onClick={() => this.new()} ><FontAwesomeIcon icon={faPlusCircle} /> &nbsp; Add New Service</button>
               </div>
               <div className="card-body">
-                <div className="mb-3">
+                <div className="mb-2">
                   <label htmlFor="serviceName" className="form-label">Service Name</label>
                   <input type="text" className="form-control" name="serviceName"
                     value={this.state.selectedData.serviceName} onChange={(e) => this.inputOnchange(e)} />
                   <div id="name" className="form-text">Please enter the Service name</div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label htmlFor="serviceDescription" className="form-label">Service Description</label>
                   <input type="text" className="form-control" name="serviceDescription"
                     value={this.state.selectedData.serviceDescription} onChange={(e) => this.inputOnchange(e)} />
                   <div id="name" className="form-text">Please enter the Service Description</div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label htmlFor="codeRepoUrl" className="form-label">Code repository </label>
                   <input type="text" className="form-control" name="codeRepoUrl"
                     value={this.state.selectedData.codeRepoUrl} onChange={(e) => this.inputOnchange(e)} />
-                  <div id="name" className="form-text">Url for ur code base</div>
+                  <div id="name" className="form-text">Url for your code base</div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label htmlFor="ciCdPlanUrl" className="form-label">Continues Integration and Deployment</label>
                   <input type="text" className="form-control" name="ciCdPlanUrl"
                     value={this.state.selectedData.ciCdPlanUrl} onChange={(e) => this.inputOnchange(e)} />
                   <div id="name" className="form-text">Url for your CI/CD pipeline</div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label htmlFor="owner" className="form-label">Owner</label>
                   <input type="text" className="form-control" name="owner"
                     value={this.state.selectedData.owner} onChange={(e) => this.inputOnchange(e)} />
                   <div id="name" className="form-text">Please enter the Service Owner</div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label htmlFor="groupName" className="form-label">Service Group Name</label>
                   <input type="text" className="form-control" name="groupName"
                     value={this.state.selectedData.groupName} readOnly />
