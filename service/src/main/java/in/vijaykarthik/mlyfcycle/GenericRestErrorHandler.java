@@ -11,6 +11,7 @@ public class GenericRestErrorHandler {
 
     @ExceptionHandler
     ResponseEntity<String> handle(Exception e) {
+        e.printStackTrace();
         return new ResponseEntity<>("Error While processing the request", new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

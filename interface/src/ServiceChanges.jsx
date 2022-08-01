@@ -6,13 +6,18 @@ import Swal from "sweetalert2";
 import Spinner from "./component/spinner";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencil, faRefresh, faPlusCircle, faTrash, faPenNib, faFloppyDisk, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faPencil, faRefresh, faPlusCircle, faTrash, faPenNib, faFloppyDisk, faSearch, faEdit } from '@fortawesome/free-solid-svg-icons'
+import axios from "axios";
+import { domain } from "./constants";
 
+const serviceChangeRequestUrl=domain() + "api/serviceChangeRequest";
+const serviceChangeRequestByStoryNo=domain()+"api/serviceChangeRequest/search/byStoryNumber?storyNumber=";
+const serviceChangeRequestByFeatureNo=domain()+"api/serviceChangeRequest/search/byFeatureNumber?featureNumber=";
 
 export default function ServiceChanges() {
     const [showSpinner, setShowSpinner] = useState(false);
     const [selectedSvcData, setSelectedSvcData] = useState({
-        storyNumber: "First Story",
+        storyNumber: "",
         featureNumber: "",
         epicNumber: "",
         storyLink: "",
@@ -23,14 +28,12 @@ export default function ServiceChanges() {
 
     const [newOrEdit, setNewOrEdit] = useState("");
     const filter = useRef()
+    const [searchSelect,setSearchSelect]=useState("story");
+    const [searchInput,setSearchInput]=useState("")
+    const [searchResult,setSearchResult]=useState([]);
 
     useEffect(() => {
-
     })
-
-    function spin() {
-        alert(filter.current.value);
-    }
 
     function newSvcChange() {
         setSelectedSvcData({
@@ -45,6 +48,52 @@ export default function ServiceChanges() {
         setNewOrEdit('new')
     }
 
+    function search(){
+        setShowSpinner(true)
+        let url=serviceChangeRequestByStoryNo.concat(searchInput)
+        if(searchSelect==="story"){
+            url=serviceChangeRequestByStoryNo.concat(searchInput)
+        }else if(searchSelect==="feature"){
+            url=serviceChangeRequestByFeatureNo.concat(searchInput)
+        }
+        
+        axios.get(url).then(
+            resp => {
+                setShowSpinner(false)
+                let arr=resp.data._embedded.serviceChangeRequests
+                setSearchResult(arr)
+            },
+            err => {
+                setShowSpinner(false)
+                Swal.fire({
+                title: 'Error!',
+                text: "Error While Fetching data",
+                icon: 'error',
+                confirmButtonText: 'Ok'
+                })
+            }
+        )
+    }
+
+    function edit(herf){
+        axios.get(herf).then(
+            resp => {
+                setShowSpinner(false)
+                let arr=resp.data
+                setSelectedSvcData(arr)
+                setNewOrEdit("update")
+            },
+            err => {
+                setShowSpinner(false)
+                Swal.fire({
+                title: 'Error!',
+                text: "Error While editing data",
+                icon: 'error',
+                confirmButtonText: 'Ok'
+                })
+            }
+        )
+    }
 
     return (
         <div>
@@ -58,12 +107,22 @@ export default function ServiceChanges() {
                         </div>
                         <div className="card-body">
                             <div className="input-group mb-3">
-                                <input type="text" className="form-control" placeholder="story or feature" />
-                                <select class="form-select" aria-label="Default select example">
+                                <input type="text" className="form-control" placeholder="story or feature" value={searchInput}  onChange={(e)=>setSearchInput(e.target.value)}/>
+                                <select className="form-select" aria-label="Default select example" value={searchSelect} onChange={(e)=>setSearchSelect(e.target.value)}>
                                     <option value="story">Story</option>
                                     <option value="feature">Feature</option>
                                 </select>
-                                <button className="btn btn-warning" type="button"><FontAwesomeIcon icon={faSearch} />&nbsp; Search</button>
+                                <button className="btn btn-warning" type="button" onClick={()=>search()}><FontAwesomeIcon icon={faSearch} />&nbsp; Search</button>
+                            </div>
+                            <div>
+                                <div class="list-group">
+                                        {searchResult.map(res=>{
+                                            return(
+                                                <a className="list-group-item list-group-item-action" style={{cursor:"pointer"}}
+                                                onClick={()=>edit(res._links.self.href)}>{res.storyNumber}</a>
+                                            );
+                                        })}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -76,7 +135,7 @@ export default function ServiceChanges() {
                                 <FontAwesomeIcon icon={faPlusCircle} />&nbsp; New SC</button>
                         </div>
                         <div className="card-body">
-                            <DisplaySvcChange selectedSvcData={selectedSvcData} setSelectedSvcData={setSelectedSvcData} newOrEdit={newOrEdit} />
+                            <DisplaySvcChange selectedSvcData={selectedSvcData} setSelectedSvcData={setSelectedSvcData} newOrEdit={newOrEdit} setShowSpinner={setShowSpinner} />
                         </div>
                     </div>
                     <div className="card  mt-4">
@@ -101,7 +160,7 @@ function ShowSpin({ showSpinner }) {
     }
 }
 
-function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, newOrEdit }) {
+function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, newOrEdit,setShowSpinner }) {
 
     function handleChange(e) {
         e.preventDefault();
@@ -111,12 +170,29 @@ function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, newOrEdit }) {
     }
 
     function add() {
-        Swal.fire({
-            title: 'Information',
-            text: "Adding the data",
-            icon: 'info',
-            confirmButtonText: 'Ok'
-        })
+        setShowSpinner(true)
+        axios.post(serviceChangeRequestUrl,selectedSvcData).then(
+            resp => {
+                setShowSpinner(false)
+                console.log(resp)
+                Swal.fire({
+                    title: 'success',
+                    text: "Service change created",
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                    })
+            },
+            err => {
+                setShowSpinner(false)
+                Swal.fire({
+                title: 'Error!',
+                text: "Error While creating the service change",
+                icon: 'error',
+                confirmButtonText: 'Ok'
+                })
+                
+            }
+        )
     }
     function update() {
         Swal.fire({
