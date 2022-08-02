@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { useRef } from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 
 import Spinner from "./component/spinner";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencil, faRefresh, faPlusCircle, faTrash, faPenNib, faFloppyDisk, faSearch, faEdit } from '@fortawesome/free-solid-svg-icons'
+import {faPlusCircle,  faSearch } from '@fortawesome/free-solid-svg-icons'
 import axios from "axios";
 import { domain } from "./constants";
+import DisplaySvcChange from "./component/DisplaySvcChange";
+import ImpactedService from "./component/ImpactedService";
 
-const serviceChangeRequestUrl=domain() + "api/serviceChangeRequest";
 const serviceChangeRequestByStoryNo=domain()+"api/serviceChangeRequest/search/byStoryNumber?storyNumber=";
 const serviceChangeRequestByFeatureNo=domain()+"api/serviceChangeRequest/search/byFeatureNumber?featureNumber=";
 
@@ -24,10 +24,18 @@ export default function ServiceChanges() {
         storyDescription: "",
         targetReleaseNumber: "",
         targetReleaseDate: "",
+        _links: {
+            self: {
+              href: ""
+            },
+            serviceChangeRequest: {
+              href: ""
+            }
+        }
     });
 
     const [newOrEdit, setNewOrEdit] = useState("");
-    const filter = useRef()
+
     const [searchSelect,setSearchSelect]=useState("story");
     const [searchInput,setSearchInput]=useState("")
     const [searchResult,setSearchResult]=useState([]);
@@ -118,8 +126,8 @@ export default function ServiceChanges() {
                                 <div class="list-group">
                                         {searchResult.map(res=>{
                                             return(
-                                                <a className="list-group-item list-group-item-action" style={{cursor:"pointer"}}
-                                                onClick={()=>edit(res._links.self.href)}>{res.storyNumber}</a>
+                                                <button className="list-group-item list-group-item-action" style={{cursor:"pointer"}}
+                                                onClick={()=>edit(res._links.self.href)}>{res.storyNumber}</button>
                                             );
                                         })}
                                 </div>
@@ -138,15 +146,7 @@ export default function ServiceChanges() {
                             <DisplaySvcChange selectedSvcData={selectedSvcData} setSelectedSvcData={setSelectedSvcData} newOrEdit={newOrEdit} setShowSpinner={setShowSpinner} />
                         </div>
                     </div>
-                    <div className="card  mt-4">
-                        <div className="card-header">
-                            Impacted service  <button className="btn btn-sm btn-success float-end" type="button" onClick={() => newSvcChange()}>
-                                <FontAwesomeIcon icon={faPlusCircle} />&nbsp; Add Impacted service</button>
-                        </div>
-                        <div className="card-body">
-                            Impacted service
-                        </div>
-                    </div>
+                    <ImpactedService storyNo={selectedSvcData.storyNumber} setShowSpinner={setShowSpinner}/>
                 </div>
 
             </div>
@@ -160,104 +160,4 @@ function ShowSpin({ showSpinner }) {
     }
 }
 
-function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, newOrEdit,setShowSpinner }) {
 
-    function handleChange(e) {
-        e.preventDefault();
-        let data = { ...selectedSvcData }
-        data[e.target.name] = e.target.value
-        setSelectedSvcData(data)
-    }
-
-    function add() {
-        setShowSpinner(true)
-        axios.post(serviceChangeRequestUrl,selectedSvcData).then(
-            resp => {
-                setShowSpinner(false)
-                console.log(resp)
-                Swal.fire({
-                    title: 'success',
-                    text: "Service change created",
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                    })
-            },
-            err => {
-                setShowSpinner(false)
-                Swal.fire({
-                title: 'Error!',
-                text: "Error While creating the service change",
-                icon: 'error',
-                confirmButtonText: 'Ok'
-                })
-                
-            }
-        )
-    }
-    function update() {
-        Swal.fire({
-            title: 'Information',
-            text: "Updating the data",
-            icon: 'info',
-            confirmButtonText: 'Ok'
-        })
-    }
-    let nre = (newOrEdit === 'new') ? <button type="button" className="btn btn-primary" onClick={() => add()}>
-        <FontAwesomeIcon icon={faFloppyDisk} />&nbsp; Add</button> : 
-        (newOrEdit === 'update') ? <button type="button" className="btn btn-primary" onClick={() => update()}>
-            <FontAwesomeIcon icon={faPenNib} />&nbsp; Update</button> : null
-
-    return (
-        <div>
-            <div className="row mb-3">
-                <div className="col-md-4">
-                    <label htmlFor="storyNumber" className="form-label">Story Number</label>
-                    <input type="text" className="form-control" name="storyNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.storyNumber} />
-                </div>
-                <div className="col-md-4">
-                    <label htmlFor="featureNumber" className="form-label">Feature Number</label>
-                    <input type="text" className="form-control" name="featureNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.featureNumber} />
-                </div>
-                <div className="col-md-4">
-                    <label htmlFor="epicNumber" className="form-label">Epic Number</label>
-                    <input type="text" className="form-control" name="epicNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.epicNumber} />
-                </div>
-            </div>
-            <div className="row mb-2">
-                <div className="col-md-4">
-                    <label htmlFor="storyLink" className="form-label">Story Link</label>
-                    <input type="text" className="form-control" name="storyLink" onChange={(e) => handleChange(e)} value={selectedSvcData.storyLink} />
-                </div>
-                <div className="col-md-4">
-                    <label htmlFor="storyDescription" className="form-label">Story Description</label>
-                    <input type="text" className="form-control" name="storyDescription" onChange={(e) => handleChange(e)} value={selectedSvcData.storyDescription} />
-                </div>
-                <div className="col-md-4">
-                    <label htmlFor="targetReleaseNumber" className="form-label">Target Release Number</label>
-                    <input type="text" className="form-control" name="targetReleaseNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.targetReleaseNumber} />
-                </div>
-            </div>
-            <div className="row mb-2">
-                <div className="col-md-4">
-                    <label htmlFor="targetReleaseDate" className="form-label">Target Release Date</label>
-                    <input type="text" className="form-control" name="targetReleaseDate" onChange={(e) => handleChange(e)} value={selectedSvcData.targetReleaseDate} />
-                </div>
-                <div className="col-md-8 pt-4 mt-2 float-end">
-                    {nre}
-                </div>
-            </div>
-
-
-
-        </div>
-    )
-    /*
-     storyNumber: "",
-     featureNumber: "",
-     epicNumber: "",
-     storyLink: "",
-     storyDescription: "",
-     targetReleaseNumber: "",
-     targetReleaseDate: "",
-     */
-}
