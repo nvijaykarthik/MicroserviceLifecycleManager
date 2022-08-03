@@ -10,6 +10,7 @@ $dark:#001a6b;
 
 $border-radius: .0rem;
 
+
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 
 
@@ -26,4 +27,28 @@ body{
 }
 .navbar{
     border-radius: 0rem !important;
+}
+
+.spinner {
+    animation: spin infinite 2s linear;
+
+    /*You can increase or decrease the timer (5s) to 
+     increase or decrease the speed of the spinner*/
+  }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.txtIcongreen{
+    color:green
+}
+.txtIconamber{
+    color:#ce9c03;
 }

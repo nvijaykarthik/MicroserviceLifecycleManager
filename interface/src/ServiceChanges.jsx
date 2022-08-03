@@ -123,10 +123,10 @@ export default function ServiceChanges() {
                                 <button className="btn btn-warning" type="button" onClick={()=>search()}><FontAwesomeIcon icon={faSearch} />&nbsp; Search</button>
                             </div>
                             <div>
-                                <div class="list-group">
-                                        {searchResult.map(res=>{
+                                <div className="list-group">
+                                        {searchResult.map((res,i)=>{
                                             return(
-                                                <button className="list-group-item list-group-item-action" style={{cursor:"pointer"}}
+                                                <button key={i} className="list-group-item list-group-item-action" style={{cursor:"pointer"}}
                                                 onClick={()=>edit(res._links.self.href)}>{res.storyNumber}</button>
                                             );
                                         })}

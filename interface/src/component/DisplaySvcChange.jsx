@@ -71,7 +71,7 @@ export default function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, 
     const nre = (newOrEdit === 'new') ? <button type="button" className="btn btn-primary" onClick={() => add()}>
         <FontAwesomeIcon icon={faFloppyDisk} />&nbsp; Add</button> : 
         (newOrEdit === 'update') ? <button type="button" className="btn btn-primary" onClick={() => update(selectedSvcData._links.self.href)}>
-            <FontAwesomeIcon icon={faPenNib} />&nbsp; Update</button> : null
+        <FontAwesomeIcon icon={faPenNib} />&nbsp; Update</button> : null
 
     return (
         <div>
