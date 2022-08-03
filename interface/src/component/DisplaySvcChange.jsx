@@ -7,7 +7,8 @@ import { domain } from "../constants";
 
 const serviceChangeRequestUrl=domain() + "api/serviceChangeRequest";
 
-export default function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, newOrEdit,setShowSpinner }) {
+export default function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, newOrEdit,setShowSpinner,setNewOrEdit,
+    setSearchInput, setSearchSelect,search}) {
 
     function handleChange(e) {
         e.preventDefault();
@@ -17,17 +18,29 @@ export default function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, 
     }
 
     function add() {
+        if(selectedSvcData.storyNumber===""){
+            Swal.fire({
+                title: 'Error!',
+                text: "Story number is empty",
+                icon: 'error',
+                confirmButtonText: 'Ok'
+                })
+            return
+        }
         setShowSpinner(true)
         axios.post(serviceChangeRequestUrl,selectedSvcData).then(
             resp => {
                 setShowSpinner(false)
-                console.log(resp)
                 Swal.fire({
                     title: 'success',
                     text: "Service change created",
                     icon: 'success',
                     confirmButtonText: 'Ok'
                     })
+                setNewOrEdit('update')
+                setSearchInput(selectedSvcData.storyNumber)
+                setSearchSelect("story")
+                search()
             },
             err => {
                 setShowSpinner(false)
@@ -72,13 +85,16 @@ export default function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, 
         <FontAwesomeIcon icon={faFloppyDisk} />&nbsp; Add</button> : 
         (newOrEdit === 'update') ? <button type="button" className="btn btn-primary" onClick={() => update(selectedSvcData._links.self.href)}>
         <FontAwesomeIcon icon={faPenNib} />&nbsp; Update</button> : null
-
+    
+    const storyNumber=(newOrEdit === 'new') ? <input type="text" className="form-control" name="storyNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.storyNumber} />
+    :<input type="text" className="form-control" name="storyNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.storyNumber} readOnly/>
+    
     return (
         <div>
             <div className="row mb-3">
                 <div className="col-md-4">
                     <label htmlFor="storyNumber" className="form-label">Story Number</label>
-                    <input type="text" className="form-control" name="storyNumber" onChange={(e) => handleChange(e)} value={selectedSvcData.storyNumber} />
+                    {storyNumber}
                 </div>
                 <div className="col-md-4">
                     <label htmlFor="featureNumber" className="form-label">Feature Number</label>
@@ -106,7 +122,8 @@ export default function DisplaySvcChange({ selectedSvcData, setSelectedSvcData, 
             <div className="row mb-2">
                 <div className="col-md-4">
                     <label htmlFor="targetReleaseDate" className="form-label">Target Release Date</label>
-                    <input type="text" className="form-control" name="targetReleaseDate" onChange={(e) => handleChange(e)} value={selectedSvcData.targetReleaseDate} />
+                    <input type="date" className="form-control" name="targetReleaseDate"
+                     onChange={(e) => handleChange(e)} value={selectedSvcData.targetReleaseDate} />
                 </div>
                 <div className="col-md-8 pt-4 mt-2 float-end">
                     {nre}

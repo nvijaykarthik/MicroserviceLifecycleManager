@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenNib, faFloppyDisk, faPlusCircle, faSpinner, faCheckCircle, faMinusCircle, faClose } from '@fortawesome/free-solid-svg-icons'
+import { faPenNib, faFloppyDisk, faPlusCircle, faSpinner, faCheckCircle, faMinusCircle, faClose, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons'
 import axios from "axios";
 import { domain } from "../constants";
 
@@ -50,8 +50,16 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
         )
     }
 
-
     function addImpactedService() {
+        if(storyNo===""){
+            Swal.fire({
+                title: 'Error!',
+                text: "Story is not selected ",
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return;
+        }
         setServiceImpactDetail({
             storyNumber: storyNo,
             impactedServiceName: "",
@@ -67,7 +75,7 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
     }
 
     let impSvcModal = showModal ? <ImpactedServiceForm setShowModal={setShowModal} serviceImpactDetail={serviceImpactDetail}
-        setServiceImpactDetail={setServiceImpactDetail} /> : "";
+        setServiceImpactDetail={setServiceImpactDetail} loadServiceForStory={loadServiceForStory} /> : "";
 
     function greenOrAmber(bool) {
         if (bool) {
@@ -79,7 +87,7 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
     return (
         <div className="card  mt-4">
             <div className="card-header">
-                Impacted service  <button className="btn btn-sm btn-success float-end" type="button" onClick={() => addImpactedService()}>
+                Impacted service  <button className="btn btn-sm btn-secondary float-end" type="button" onClick={() => addImpactedService()}>
                     <FontAwesomeIcon icon={faPlusCircle} />&nbsp; Add Impacted service</button>
             </div>
             <div className="card-body">
@@ -111,7 +119,11 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
                                     <td >{greenOrAmber(svcs.cacheClear)}</td>
                                     <td >{greenOrAmber(svcs.dbChange)}</td>
                                     <td >{greenOrAmber(svcs.codeChange)}</td>
-                                    <td >edit</td>
+                                    <td ><div class="btn-group" role="group" aria-label="Basic example">
+                                        <button className="btn btn-success btn-sm" >
+            <FontAwesomeIcon icon={faPencil} /></button>
+            <button className="btn btn-danger btn-sm" >
+              <FontAwesomeIcon icon={faTrash} /></button></div></td>
                                 </tr>
                             )
                         })}
@@ -123,26 +135,25 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
     )
 }
 
-function ImpactedServiceForm({ serviceImpactDetail, setServiceImpactDetail, setShowModal }) {
+function ImpactedServiceForm({ serviceImpactDetail, setServiceImpactDetail, setShowModal,loadServiceForStory }) {
     const impactedSvcUrl = domain() + "api/impactedService";
 
     const [showSpin, setShowSpin] = useState(false)
     const [impactedServices, setImpactedServices] = useState([])
-
-
 
     function saveChanges() {
         setShowSpin(true)
         axios.post(impactedSvcUrl, serviceImpactDetail).then(
             resp => {
                 setShowSpin(false)
-                console.log(resp)
+                setShowModal(false)
                 Swal.fire({
                     title: 'success',
                     text: "Service change created",
                     icon: 'success',
                     confirmButtonText: 'Ok'
                 })
+                loadServiceForStory()
             },
             err => {
                 setShowSpin(false)
@@ -155,7 +166,6 @@ function ImpactedServiceForm({ serviceImpactDetail, setServiceImpactDetail, setS
             }
         )
     }
-
 
 
     let spin = showSpin ? <FontAwesomeIcon icon={faSpinner} className="spinner" /> : ""
