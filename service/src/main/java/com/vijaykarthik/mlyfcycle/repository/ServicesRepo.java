@@ -1,4 +1,4 @@
-package in.vijaykarthik.mlyfcycle.repository;
+package com.vijaykarthik.mlyfcycle.repository;
 
 import java.util.List;
 
@@ -8,13 +8,12 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import in.vijaykarthik.mlyfcycle.entity.ServiceImpactDetails;
+import com.vijaykarthik.mlyfcycle.entity.Services;
 
-@RepositoryRestResource(path="impactedService")
+@RepositoryRestResource(path="service")
 @CrossOrigin(origins = "http://localhost:3000")
-public interface SercviceImpactRepo extends CrudRepository<ServiceImpactDetails,Long>{
-
-    @RestResource(path="/storyNumber")
-    List<ServiceImpactDetails> findByStoryNumber(@Param("storyNumber") String storyNumber);
+public interface ServicesRepo extends CrudRepository<Services,Long>{
     
+    @RestResource(path="/byGroup")
+    List<Services> findByGroupName(@Param(value = "groupName") String groupName);
 }

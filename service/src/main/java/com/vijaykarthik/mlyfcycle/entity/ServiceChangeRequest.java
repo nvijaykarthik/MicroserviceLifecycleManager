@@ -1,4 +1,4 @@
-package in.vijaykarthik.mlyfcycle.entity;
+package com.vijaykarthik.mlyfcycle.entity;
 
 import java.time.LocalDate;
 import java.util.Objects;

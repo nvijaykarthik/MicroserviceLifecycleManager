@@ -5,6 +5,7 @@ import Portfolio from "./Portfolio";
 import ServiceGroup from "./ServiceGroup";
 import Services from "./Services";
 import ServiceChanges  from "./ServiceChanges";
+import {SearchByRelease}  from "./component/SearchByRelease/SearchByRelease";
 class App extends Component {
   render() {
     return (
@@ -24,6 +25,9 @@ class App extends Component {
                 </li>
                 <li className="nav-item">
                   <Link to="/serviceChanges" className="nav-link">Service Change</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/searchByRelease" className="nav-link">Search Release Items</Link>
                 </li>
                 <li className="nav-item dropdown">
                   <Link to="" className="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,6 +65,7 @@ class App extends Component {
           <Route path="/serviceGroup" element={<ServiceGroup />}></Route>
           <Route path="/services" element={<Services />}></Route>
           <Route path="/serviceChanges" element={<ServiceChanges />}></Route>
+          <Route path="/searchByRelease" element={<SearchByRelease />}></Route>
         </Routes>
         </div>
       </div>
