@@ -22,7 +22,12 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
         dbChange: false,
         dbChangeCommitUrl: "",
         codeChange: false,
-        codeChangeCommitUrl: ""
+        codeChangeCommitUrl: "",
+        _links: {
+            self: {
+                href: ""
+            }
+        }
     });
     const [showModal, setShowModal] = useState(false)
 
@@ -51,7 +56,7 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
     }
 
     function addImpactedService() {
-        if(storyNo===""){
+        if (storyNo === "") {
             Swal.fire({
                 title: 'Error!',
                 text: "Story is not selected ",
@@ -69,7 +74,12 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
             dbChange: false,
             dbChangeCommitUrl: "",
             codeChange: false,
-            codeChangeCommitUrl: ""
+            codeChangeCommitUrl: "",
+            _links: {
+                self: {
+                    href: ""
+                }
+            }
         })
         setShowModal(true)
     }
@@ -84,6 +94,64 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
         return <FontAwesomeIcon icon={faMinusCircle} className="txtIconamber" />
     };
 
+    function editIS(svcs) {
+        if (storyNo === "") {
+            Swal.fire({
+                title: 'Error!',
+                text: "Story is not selected ",
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            })
+            return;
+        }
+
+        setServiceImpactDetail({
+            storyNumber: storyNo,
+            impactedServiceName: svcs.impactedServiceName,
+            install: svcs.install,
+            restart: svcs.restart,
+            cacheClear: svcs.cacheClear,
+            dbChange: svcs.dbChange,
+            dbChangeCommitUrl: svcs.dbChangeCommitUrl,
+            codeChange: svcs.codeChange,
+            codeChangeCommitUrl: svcs.codeChangeCommitUrl,
+            _links: {
+                self: {
+                    href: svcs._links.self.href
+                }
+            }
+        })
+
+        setShowModal(true)
+    }
+
+    function deleteIS(url) {
+        setShowSpinner(true)
+        axios.delete(url).then(
+            resp => {
+                // console.log(resp)
+                setShowSpinner(false)
+                Swal.fire({
+                    title: 'success',
+                    text: "Service Impact deleted",
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                })
+                loadServiceForStory()
+
+            },
+            err => {
+                Swal.fire({
+                    title: 'Error!',
+                    text: "Error While deleting",
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                })
+                setShowSpinner(false)
+            }
+        )
+
+    }
     return (
         <div className="card  mt-4">
             <div className="card-header">
@@ -119,11 +187,11 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
                                     <td >{greenOrAmber(svcs.cacheClear)}</td>
                                     <td >{greenOrAmber(svcs.dbChange)}</td>
                                     <td >{greenOrAmber(svcs.codeChange)}</td>
-                                    <td ><div class="btn-group" role="group" aria-label="Basic example">
+                                    <td ><div className="btn-group" role="group" aria-label="Basic example">
                                         <button className="btn btn-success btn-sm" >
-            <FontAwesomeIcon icon={faPencil} /></button>
-            <button className="btn btn-danger btn-sm" >
-              <FontAwesomeIcon icon={faTrash} /></button></div></td>
+                                            <FontAwesomeIcon icon={faPencil} onClick={() => editIS(svcs)} /></button>
+                                        <button className="btn btn-danger btn-sm" >
+                                            <FontAwesomeIcon icon={faTrash} onClick={() => deleteIS(svcs._links.self.href)} /></button></div></td>
                                 </tr>
                             )
                         })}
@@ -135,7 +203,7 @@ export default function ImpactedService({ storyNo, setShowSpinner }) {
     )
 }
 
-function ImpactedServiceForm({ serviceImpactDetail, setServiceImpactDetail, setShowModal,loadServiceForStory }) {
+function ImpactedServiceForm({ serviceImpactDetail, setServiceImpactDetail, setShowModal, loadServiceForStory }) {
     const impactedSvcUrl = domain() + "api/impactedService";
 
     const [showSpin, setShowSpin] = useState(false)
@@ -143,28 +211,53 @@ function ImpactedServiceForm({ serviceImpactDetail, setServiceImpactDetail, setS
 
     function saveChanges() {
         setShowSpin(true)
-        axios.post(impactedSvcUrl, serviceImpactDetail).then(
-            resp => {
-                setShowSpin(false)
-                setShowModal(false)
-                Swal.fire({
-                    title: 'success',
-                    text: "Service change created",
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                })
-                loadServiceForStory()
-            },
-            err => {
-                setShowSpin(false)
-                Swal.fire({
-                    title: 'Error!',
-                    text: "Error While creating the service change",
-                    icon: 'error',
-                    confirmButtonText: 'Ok'
-                })
-            }
-        )
+        if (serviceImpactDetail._links.self.href === "") {
+            axios.post(impactedSvcUrl, serviceImpactDetail).then(
+                resp => {
+                    setShowSpin(false)
+                    setShowModal(false)
+                    Swal.fire({
+                        title: 'success',
+                        text: "Service change created",
+                        icon: 'success',
+                        confirmButtonText: 'Ok'
+                    })
+                    loadServiceForStory()
+                },
+                err => {
+                    setShowSpin(false)
+                    Swal.fire({
+                        title: 'Error!',
+                        text: "Error While creating the service change",
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    })
+                }
+            )
+        } else {
+            axios.patch(serviceImpactDetail._links.self.href, serviceImpactDetail).then(
+                resp => {
+                    setShowSpin(false)
+                    setShowModal(false)
+                    Swal.fire({
+                        title: 'success',
+                        text: "Service change created",
+                        icon: 'success',
+                        confirmButtonText: 'Ok'
+                    })
+                    loadServiceForStory()
+                },
+                err => {
+                    setShowSpin(false)
+                    Swal.fire({
+                        title: 'Error!',
+                        text: "Error While creating the service change",
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    })
+                }
+            )
+        }
     }
 
 
@@ -269,10 +362,12 @@ function ImpactedServiceFormElements({ serviceImpactDetail, setServiceImpactDeta
                         onChange={(e) => inputOnchangeGroupName(e)} value={selectedServiceGroupName}>
                         <option value=""></option>
                         {
-                            serviceGroups.map((grps, i) => <option key={i} value={grps.name}>{grps.name}({grps.portfolioName})</option>)
+                            serviceGroups.map((grps, i) => {
+                            return(<option key={i} value={grps.name} >{grps.name}({grps.portfolioName})</option>)
+                        })
                         }
                     </select>
-                    <label htmlFor="impactedServiceName" className="form-label">Impacted Service</label>
+                    <label htmlFor="impactedServiceName" className="form-label">Impacted Service selected:<b>{serviceImpactDetail.impactedServiceName}</b></label>
                     <select type="text" className="form-select" name="impactedServiceName" onChange={(e) => handleChange(e)} value={serviceImpactDetail.impactedServiceName} >
                         <option value=""></option>
                         {
