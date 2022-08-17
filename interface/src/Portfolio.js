@@ -161,11 +161,10 @@ class Portfolio extends Component {
         <tr key={i}>
           <th> {i}</th>
           <td>{portfolio.name}</td>
-          <td><button className="btn btn-success btn-sm" onClick={() => this.getEdit(portfolio._links.self.href)}>
+          <td><div class="btn-group" role="group" aria-label="Basic example"><button className="btn btn-success btn-sm" onClick={() => this.getEdit(portfolio._links.self.href)}>
             <FontAwesomeIcon icon={faPencil} /></button>
-            &nbsp;
             <button className="btn btn-danger btn-sm" onClick={() => this.delete(portfolio._links.self.href)}>
-              <FontAwesomeIcon icon={faTrash} /></button>
+              <FontAwesomeIcon icon={faTrash} /></button></div>
           </td>
         </tr>
       )

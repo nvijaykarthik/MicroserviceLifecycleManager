@@ -231,11 +231,11 @@ class Services extends Component {
         <tr key={i}>
           <th> {i}</th>
           <td>{data.serviceName}</td>
-          <td><button className="btn btn-success btn-sm" onClick={() => this.getEdit(data._links.self.href)}>
+          <td><div class="btn-group" role="group" aria-label="Basic example"><button className="btn btn-success btn-sm" onClick={() => this.getEdit(data._links.self.href)}>
             <FontAwesomeIcon icon={faPencil} /></button>
-            &nbsp;
             <button className="btn btn-danger btn-sm" onClick={() => this.delete(data._links.self.href)}>
               <FontAwesomeIcon icon={faTrash} /></button>
+              </div>
           </td>
         </tr>
       )

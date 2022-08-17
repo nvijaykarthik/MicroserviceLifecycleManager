@@ -35,13 +35,9 @@ export default function ServiceChanges() {
     });
 
     const [newOrEdit, setNewOrEdit] = useState("");
-
     const [searchSelect,setSearchSelect]=useState("story");
     const [searchInput,setSearchInput]=useState("")
     const [searchResult,setSearchResult]=useState([]);
-
-    useEffect(() => {
-    })
 
     function newSvcChange() {
         setSelectedSvcData({
@@ -115,12 +111,15 @@ export default function ServiceChanges() {
                         </div>
                         <div className="card-body">
                             <div className="input-group mb-3">
-                                <input type="text" className="form-control" placeholder="story or feature" value={searchInput}  onChange={(e)=>setSearchInput(e.target.value)}/>
-                                <select className="form-select" aria-label="Default select example" value={searchSelect} onChange={(e)=>setSearchSelect(e.target.value)}>
+                                <input type="text" className="form-control" placeholder="story or feature" value={searchInput}  
+                                onChange={(e)=>setSearchInput(e.target.value)}/>
+                                <select className="form-select" aria-label="Default select example" value={searchSelect} 
+                                onChange={(e)=>setSearchSelect(e.target.value)}>
                                     <option value="story">Story</option>
                                     <option value="feature">Feature</option>
                                 </select>
-                                <button className="btn btn-warning" type="button" onClick={()=>search()}><FontAwesomeIcon icon={faSearch} />&nbsp; Search</button>
+                                <button className="btn btn-warning" type="button" onClick={()=>search()}>
+                                    <FontAwesomeIcon icon={faSearch} />&nbsp; Search</button>
                             </div>
                             <div>
                                 <div className="list-group">
@@ -139,14 +138,16 @@ export default function ServiceChanges() {
                 <div className="col-8">
                     <div className="card ">
                         <div className="card-header">
-                            Service Changes <button className="btn btn-sm btn-success float-end" type="button" onClick={() => newSvcChange()}>
+                            Service Changes <button className="btn btn-sm btn-secondary float-end" type="button" onClick={() => newSvcChange()}>
                                 <FontAwesomeIcon icon={faPlusCircle} />&nbsp; New SC</button>
                         </div>
                         <div className="card-body">
-                            <DisplaySvcChange selectedSvcData={selectedSvcData} setSelectedSvcData={setSelectedSvcData} newOrEdit={newOrEdit} setShowSpinner={setShowSpinner} />
+                            <DisplaySvcChange selectedSvcData={selectedSvcData} setSelectedSvcData={setSelectedSvcData} 
+                            newOrEdit={newOrEdit} setShowSpinner={setShowSpinner} setNewOrEdit={setNewOrEdit}
+                            setSearchInput={setSearchInput} setSearchSelect={setSearchSelect} search={search}/>
                         </div>
                     </div>
-                    <ImpactedService storyNo={selectedSvcData.storyNumber} setShowSpinner={setShowSpinner}/>
+                    {newOrEdit==="update"?<ImpactedService storyNo={selectedSvcData.storyNumber} setShowSpinner={setShowSpinner}/>:""}
                 </div>
 
             </div>
