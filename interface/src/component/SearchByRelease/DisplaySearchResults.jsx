@@ -1,40 +1,58 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenNib, faFloppyDisk, faPlusCircle, faSpinner, faCheckCircle, faMinusCircle, faClose } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+import { ReleaseActions } from './ReleaseActions'
+import Spinner from "../spinner";
 
-export const DisplaySearchResults = ({ serviceImpactDetailsList }) => {
+export const DisplaySearchResults = ({ serviceImpactDetailsList, showSpinner }) => {
+
+    const displaySpinner = () => showSpinner ? <Spinner/> : ''
+
+    const greenOrAmber = flag =>
+        flag ?
+            <FontAwesomeIcon icon={faCheckCircle} className="txtIcongreen" />
+            :
+            <FontAwesomeIcon icon={faMinusCircle} className="txtIconamber" />
 
     const columns = [
         {
+            name: 'Actions',
+            cell: row => <ReleaseActions size="small" row={row} />,
+            allowOverflow: true,
+            button: true,
+            width: '56px',
+        },
+        {
             name: 'Story Number',
             selector: row => row.storyNumber,
-            grow: 25,
+            sortable: true,
+            grow: 50,
         },
         {
             name: 'Impacted Service Name',
             selector: row => row.impactedServiceName,
-            grow: 60,
+            sortable: true,
+            grow: 90,
         },
         {
             name: 'Should Install?',
-            selector: row => row.install,
+            cell: row => greenOrAmber(row.install),
+            allowOverflow: true,
             grow: 25,
         },
         {
             name: 'Should Restart Server?',
-            selector: row => row.restart,
+            cell: row => greenOrAmber(row.restart),
             grow: 40,
         },
         {
             name: 'Should Clear Cache?',
-            selector: row => row.cacheClear,
+            cell: row => greenOrAmber(row.cacheClear),
             grow: 40,
         },
         {
             name: 'Has DB Change?',
-            selector: row => row.dbChange,
+            cell: row => greenOrAmber(row.dbChange),
             grow: 30,
         },
         {
@@ -44,7 +62,7 @@ export const DisplaySearchResults = ({ serviceImpactDetailsList }) => {
         },
         {
             name: 'Has Code Changes?',
-            selector: row => row.codeChange,
+            cell: row => greenOrAmber(row.codeChange),
             grow: 25,
         },
         {
@@ -56,15 +74,15 @@ export const DisplaySearchResults = ({ serviceImpactDetailsList }) => {
 
 
 
-    
+
     return (
         <>
+            {displaySpinner()}
             <DataTable
                 title="List of Impacted Services"
                 responsive
                 striped
                 highlightOnHover
-                pointerOnHover
                 columns={columns}
                 data={serviceImpactDetailsList}
             />

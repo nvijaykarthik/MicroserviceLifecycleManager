@@ -120,7 +120,7 @@ export const SearchByRelease = () => {
                     </div>
                 </div>
             </div>
-            <DisplaySearchResults serviceImpactDetailsList={serviceImpactDetailsList}></DisplaySearchResults>
+            <DisplaySearchResults serviceImpactDetailsList={serviceImpactDetailsList} showSpinner={showSpinner}></DisplaySearchResults>
         </>
     )
 }
