@@ -1,4 +1,4 @@
-package in.vijaykarthik.mlyfcycle;
+package com.vijaykarthik.mlyfcycle;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

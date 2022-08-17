@@ -1,4 +1,4 @@
-package in.vijaykarthik.mlyfcycle.entity;
+package com.vijaykarthik.mlyfcycle.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

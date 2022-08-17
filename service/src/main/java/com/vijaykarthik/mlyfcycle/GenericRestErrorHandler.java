@@ -1,4 +1,4 @@
-package in.vijaykarthik.mlyfcycle;
+package com.vijaykarthik.mlyfcycle;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

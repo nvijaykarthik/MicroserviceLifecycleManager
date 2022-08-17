@@ -5,12 +5,12 @@ import Portfolio from "./Portfolio";
 import ServiceGroup from "./ServiceGroup";
 import Services from "./Services";
 import ServiceChanges  from "./ServiceChanges";
+import { SearchByRelease }  from "./component/SearchByRelease/SearchByRelease";
+
 class App extends Component {
   render() {
     return (
-      <div className="browser">
-        
-       
+      <div className="browser">       
         <nav className="navbar navbar-expand-lg navbar-dark  bg-dark shadow p-2 mb-2 rounded">
           <div className="container">
             <Link to="/" className="navbar-brand">Microservice Lifecycle manager</Link>
@@ -37,6 +37,9 @@ class App extends Component {
                 <li className="nav-item">
                     <Link to="/services" className="nav-link">Services</Link>
                 </li>
+                <li className="nav-item">
+                  <Link to="/searchByRelease" className="nav-link">Search Release Items</Link>
+                </li>
               </ul>
               <ul className="navbar-nav d-flex">
                 <li className="nav-item dropdown">
@@ -61,6 +64,7 @@ class App extends Component {
           <Route path="/serviceGroup" element={<ServiceGroup />}></Route>
           <Route path="/services" element={<Services />}></Route>
           <Route path="/serviceChanges" element={<ServiceChanges />}></Route>
+          <Route path="/searchByRelease" element={<SearchByRelease />}></Route>
         </Routes>
         </div>
       </div>
