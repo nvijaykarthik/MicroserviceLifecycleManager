@@ -13,6 +13,8 @@ export const DisplaySearchResults = ({ serviceImpactDetailsList, showSpinner }) 
             <FontAwesomeIcon icon={faCheckCircle} className="txtIcongreen" />
             :
             <FontAwesomeIcon icon={faMinusCircle} className="txtIconamber" />
+    
+    const showWrappedData = colData => <div className="text-wrap">{colData}</div>
 
     const columns = [
         {
@@ -24,13 +26,13 @@ export const DisplaySearchResults = ({ serviceImpactDetailsList, showSpinner }) 
         },
         {
             name: 'Story Number',
-            selector: row => row.storyNumber,
+            cell: row => showWrappedData(row.storyNumber),
             sortable: true,
             grow: 50,
         },
         {
             name: 'Impacted Service Name',
-            selector: row => row.impactedServiceName,
+            cell: row => showWrappedData(row.impactedServiceName),
             sortable: true,
             grow: 90,
         },
@@ -57,7 +59,7 @@ export const DisplaySearchResults = ({ serviceImpactDetailsList, showSpinner }) 
         },
         {
             name: 'DB Change Commit URL',
-            selector: row => row.dbChangeCommitUrl,
+            cell: row => showWrappedData(row.dbChangeCommitUrl),
             grow: 100,
         },
         {
@@ -67,13 +69,10 @@ export const DisplaySearchResults = ({ serviceImpactDetailsList, showSpinner }) 
         },
         {
             name: 'Code Change Commit Url',
-            selector: row => row.codeChangeCommitUrl,
+            cell: row => showWrappedData(row.codeChangeCommitUrl),
             grow: 100,
         },
     ];
-
-
-
 
     return (
         <>
